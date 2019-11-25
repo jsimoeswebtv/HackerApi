@@ -13,44 +13,42 @@ namespace HackerNewsApi.Controllers
     [ApiController]
     public class HackerController : ControllerBase
     {
-        IMemoryCacheImplement<Story> _HackerCacheCache;
-        IHackerApiClient Httpclient;
-       public HackerController(IMemoryCacheImplement<Story> memCache, IHackerApiClient client)
+        #region Private Fields
+
+        private ICacheInterface<Story> _HackerCacheCache;
+        private IApiClientInterface _Httpclient;
+
+        #endregion Private Fields
+
+        #region Public Constructors
+
+        public HackerController(ICacheInterface<Story> memCache, IApiClientInterface client)
         {
             _HackerCacheCache = memCache;
-            Httpclient = client;
+            _Httpclient = client;
         }
-       
+
+        #endregion Public Constructors
+
+        #region Public Methods
+
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public async Task<ActionResult<List<Story>>> GetAsync()
+
         {
-            return new string[] { "value1", "value2" };
+            List<Story> returnList = new List<Story>();
+            int[] results = await _Httpclient.GetBestStories();
+
+            for (int i = 0; i < 20; i++)
+            {
+                var myStory = await _HackerCacheCache.GetOrCreate(results[i], async () => await _Httpclient.Get(results[i]));
+                returnList.Add(myStory);
+            }
+
+            return returnList.OrderBy(o => o.score).ToList();
         }
 
-        // GET api/values/5
-        [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        #endregion Public Methods
     }
 }

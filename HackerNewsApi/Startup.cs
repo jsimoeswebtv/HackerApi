@@ -29,8 +29,8 @@ namespace HackerNewsApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddSingleton<IMemoryCacheImplement<Story>, MemoryCacheImplement<Story>>();
-           services.AddSingleton<IHackerApiClient, HackerApiClient>();
+            services.AddSingleton<ICacheInterface<Story>, MemoryCacheImplement<Story>>();
+           services.AddSingleton<IApiClientInterface, HackerApiClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

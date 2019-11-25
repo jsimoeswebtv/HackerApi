@@ -1,7 +1,16 @@
-﻿namespace HackerNewsApi.HackerApi
+﻿using HackerNewsApi.Models;
+using System.Threading.Tasks;
+
+namespace HackerNewsApi.HackerApi
 {
-    public interface IHackerApiClient
+    public interface IApiClientInterface
     {
-        string Get();
+        #region Public Methods
+
+        Task<Story> Get(int StoryId);
+
+        Task<int[]> GetBestStories();
+
+        #endregion Public Methods
     }
 }
