@@ -46,7 +46,7 @@ namespace HackerNewsApi.Controllers
                 returnList.Add(myStory);
             }
 
-            return returnList.OrderBy(o => o.score).ToList();
+            return returnList.OrderByDescending(o => o.score).ToList();
         }
 
         #endregion Public Methods
